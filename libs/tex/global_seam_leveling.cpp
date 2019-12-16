@@ -259,8 +259,10 @@ global_seam_leveling(UniGraph const & graph, mve::TriangleMesh::ConstPtr mesh,
 
     util::WallTimer timer;
     std::cout << "\tCalculating adjustments:"<< std::endl;
-    #pragma omp parallel for
-    for (std::size_t channel = 0; channel < 3; ++channel) {
+
+    unsigned numChannels = texture_patches->front()->get_image()->channels();
+//    #pragma omp parallel for
+    for (std::size_t channel = 0; channel < numChannels; ++channel) {
         /* Prepare solver. */
         Eigen::ConjugateGradient<SpMat, Eigen::Lower> cg;
         cg.setMaxIterations(1000);
@@ -298,7 +300,7 @@ global_seam_leveling(UniGraph const & graph, mve::TriangleMesh::ConstPtr mesh,
     mve::TriangleMesh::FaceList const & mesh_faces = mesh->get_faces();
 
     ProgressCounter texture_patch_counter("\tAdjusting texture patches", texture_patches->size());
-    #pragma omp parallel for schedule(dynamic)
+//    #pragma omp parallel for schedule(dynamic)
     for (std::size_t i = 0; i < texture_patches->size(); ++i) {
         texture_patch_counter.progress<SIMPLE>();
 
@@ -313,7 +315,7 @@ global_seam_leveling(UniGraph const & graph, mve::TriangleMesh::ConstPtr mesh,
             texture_patch->adjust_colors(patch_adjust_values);
             texture_patch_counter.inc();
             continue;
-        };
+        }
 
         for (std::size_t j = 0; j < faces.size(); ++j) {
             for (std::size_t k = 0; k < 3; ++k) {

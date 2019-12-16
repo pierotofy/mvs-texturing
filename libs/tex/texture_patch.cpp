@@ -44,7 +44,8 @@ TexturePatch::adjust_colors(std::vector<math::Vec3f> const & adjust_values) {
 
     validity_mask->fill(0);
 
-    mve::FloatImage::Ptr iadjust_values = mve::FloatImage::create(get_width(), get_height(), 3);
+    std::cerr << image->channels() << std::endl;
+    mve::FloatImage::Ptr iadjust_values = mve::FloatImage::create(get_width(), get_height(), image->channels());
     for (std::size_t i = 0; i < texcoords.size(); i += 3) {
         math::Vec2f v1 = texcoords[i];
         math::Vec2f v2 = texcoords[i + 1];
@@ -70,7 +71,7 @@ TexturePatch::adjust_colors(std::vector<math::Vec3f> const & adjust_values) {
                 bool inside = bcoords.minimum() >= 0.0f;
                 if (inside) {
                     assert(x != 0 && y != 0);
-                    for (int c = 0; c < 3; ++c) {
+                    for (int c = 0; c < image->channels(); ++c) {
                         iadjust_values->at(x, y, c) = math::interpolate(
                             adjust_values[i][c], adjust_values[i + 1][c], adjust_values[i + 2][c],
                             bcoords[0], bcoords[1], bcoords[2]);
@@ -90,7 +91,7 @@ TexturePatch::adjust_colors(std::vector<math::Vec3f> const & adjust_values) {
                     if (ha > sqrt_2 || hb > sqrt_2 || hc > sqrt_2)
                         continue;
 
-                    for (int c = 0; c < 3; ++c) {
+                    for (int c = 0; c < image->channels(); ++c) {
                         iadjust_values->at(x, y, c) = math::interpolate(
                             adjust_values[i][c], adjust_values[i + 1][c], adjust_values[i + 2][c],
                             bcoords[0], bcoords[1], bcoords[2]);
@@ -104,7 +105,7 @@ TexturePatch::adjust_colors(std::vector<math::Vec3f> const & adjust_values) {
 
     for (int i = 0; i < image->get_pixel_amount(); ++i) {
         if (validity_mask->at(i, 0) != 0){
-            for (int c = 0; c < 3; ++c) {
+            for (int c = 0; c < image->channels(); ++c) {
                 image->at(i, c) += iadjust_values->at(i, c);
             }
         } else {

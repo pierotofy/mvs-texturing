@@ -367,7 +367,7 @@ TextureView::get_face_info(math::Vec3f const & v1, math::Vec3f const & v2,
                 if (!fast_sampling_possible && !tri.inside(cx, cy)) continue;
 
                 if (settings.outlier_removal != OUTLIER_REMOVAL_NONE) {
-                    for (std::size_t i = 0; i < 3; i++){
+                    for (std::size_t i = 0; i < image->channels(); i++){
                          color[i] = static_cast<double>(image->at(x, y, i)) / 255.0;
                     }
                     colors += color;

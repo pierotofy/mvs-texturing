@@ -426,7 +426,7 @@ bool fill_hole(std::vector<std::size_t> const & hole, UniGraph const & graph,
             texcoords.push_back(projection);
         }
     }
-    mve::FloatImage::Ptr image = mve::FloatImage::create(image_size, image_size, 3);
+    mve::FloatImage::Ptr image = mve::FloatImage::create(image_size, image_size, 1); // TODO!
     //DEBUG image->fill_color(*math::Vec4uc(0, 255, 0, 255));
     TexturePatch::Ptr texture_patch = TexturePatch::create(0, hole, texcoords, image);
     std::size_t texture_patch_id;
@@ -567,7 +567,7 @@ generate_texture_patches(UniGraph const & graph, mve::TriangleMesh::ConstPtr mes
         }
 
         if (!unseen_faces.empty()) {
-            mve::FloatImage::Ptr image = mve::FloatImage::create(3, 3, 3);
+            mve::FloatImage::Ptr image = mve::FloatImage::create(3, 3, 1); // TODO
             std::vector<math::Vec2f> texcoords;
             for (std::size_t i = 0; i < unseen_faces.size(); ++i) {
                 math::Vec2f projections[] = {{2.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 2.0f}};
