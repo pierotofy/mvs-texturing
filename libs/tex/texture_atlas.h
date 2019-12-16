@@ -34,8 +34,8 @@ class TextureAtlas {
         typedef std::vector<math::Vec2f> Texcoords;
 
     private:
-        unsigned int const size;
-        unsigned int const padding;
+        unsigned const size;
+        unsigned const padding;
         bool finalized;
 
         Faces faces;
@@ -53,9 +53,9 @@ class TextureAtlas {
         void merge_texcoords(void);
 
     public:
-        TextureAtlas(unsigned int size, mve::ImageType type);
+        TextureAtlas(unsigned int size, mve::ImageType type, unsigned channels);
 
-        static TextureAtlas::Ptr create(unsigned int size, mve::ImageType type);
+        static TextureAtlas::Ptr create(unsigned int size, mve::ImageType type, unsigned channels);
 
         Faces const & get_faces(void) const;
         TexcoordIds const & get_texcoord_ids(void) const;
@@ -68,8 +68,8 @@ class TextureAtlas {
 };
 
 inline TextureAtlas::Ptr
-TextureAtlas::create(unsigned int size, mve::ImageType type) {
-    return Ptr(new TextureAtlas(size, type));
+TextureAtlas::create(unsigned int size, mve::ImageType type, unsigned channels) {
+    return std::make_shared<TextureAtlas>(size, type, channels);
 }
 
 inline TextureAtlas::Faces const &

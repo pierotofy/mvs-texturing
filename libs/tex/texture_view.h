@@ -413,10 +413,33 @@ TextureView::get_face_info(math::Vec3f const & v1, math::Vec3f const & v2,
 }
 
 template <typename T>
+typename mve::Image<T>::Ptr
+average(typename mve::Image<T>::Ptr image) {
+    typename mve::Image<T>::Ptr ret;
+    ret = mve::Image<T>::create(image->width(), image->height(), 1);
+    for (int i = 0; i < image->get_pixel_amount(); ++i) {
+        unsigned sum = 0;
+        for (int j = 0; j < image->channels(); ++j) {
+            sum += image->at(i, j);
+        }
+        ret->at(i) = sum / image->channels();
+    }
+    return ret;
+}
+
+template <typename T>
 void
 TextureView::generate_gradient_magnitude(void) {
     assert(image != NULL);
-    typename mve::Image<T>::Ptr bw = mve::image::desaturate<T>(get_image<T>(), mve::image::DESATURATE_LUMINANCE);
+    typename mve::Image<T>::Ptr bw;
+    if (get_image<T>()->channels() == 1) {
+        bw = std::dynamic_pointer_cast<mve::Image<T>>(get_image<T>());
+    } else if (get_image<T>()->channels() <= 4) {
+        bw = mve::image::desaturate<T>(get_image<T>(), mve::image::DESATURATE_LUMINANCE);
+    } else {
+        bw = average<T>(get_image<T>());
+    }
+
     gradient_magnitude = mve::image::sobel_edge<T>(bw);
 }
 

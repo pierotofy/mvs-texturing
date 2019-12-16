@@ -49,7 +49,11 @@ MaterialLib::save_to_files(std::string const & prefix) const {
         if (material.diffuse_map->get_type() == mve::IMAGE_TYPE_UINT16){
             mve::image::save_tiff_16_file(std::dynamic_pointer_cast<mve::RawImage>(material.diffuse_map), filename + ".tif");
         }else{
-            mve::image::save_png_file(std::dynamic_pointer_cast<mve::ByteImage>(material.diffuse_map), filename + ".png");
+            if (material.diffuse_map->channels() <= 4) {
+                mve::image::save_png_file(std::dynamic_pointer_cast<mve::ByteImage>(material.diffuse_map), filename + ".png");
+            } else {
+                mve::image::save_tiff_file(std::dynamic_pointer_cast<mve::ByteImage>(material.diffuse_map), filename + ".tiff");
+            }
         }
     }
 }
